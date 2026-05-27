@@ -1,5 +1,12 @@
+import { IsString, IsNumber, IsArray } from 'class-validator';
+
 export class CreatePortfolioDto {
-  owner!: string;
-  balance!: number;
-  coins!: [];
+  @IsString()
+  owner: string;
+
+  @IsNumber()
+  balance: number;
+
+  @IsArray()
+  coins: [];
 }

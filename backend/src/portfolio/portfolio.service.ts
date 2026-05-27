@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-
+import { Portfolio } from './portfolio.interface';
 @Injectable()
 export class PortfolioService {
-  private portfolio: any = [];
+  private portfolio: Portfolio[] = [];
 
   create(createPortfolioDto: CreatePortfolioDto) {
     const newPortfolio = {

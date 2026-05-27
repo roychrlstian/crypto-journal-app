@@ -1,5 +1,12 @@
+import { IsNumber, IsString } from 'class-validator';
+
 export class CreateTradeDto {
-  coin!: string;
-  entry!: number;
-  quantity!: number;
+  @IsString()
+  coin: string;
+
+  @IsNumber()
+  entry: number;
+
+  @IsNumber()
+  quantity: number;
 }
