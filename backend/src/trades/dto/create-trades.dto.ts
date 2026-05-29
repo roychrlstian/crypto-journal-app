@@ -2,11 +2,11 @@ import { IsNumber, IsString } from 'class-validator';
 
 export class CreateTradeDto {
   @IsString()
-  coin: string;
+  coin!: string;
 
   @IsNumber()
-  entry: number;
+  entry!: number;
 
   @IsNumber()
-  quantity: number;
+  quantity!: number;
 }
