@@ -17,7 +17,7 @@ export class PortfolioController {
 
   @Post()
   create(@Body() createPortfolioDto: CreatePortfolioDto) {
-    return this.portfolioService.create(createPortfolioDto);
+    return this.portfolioService.createPortfolio(createPortfolioDto);
   }
 
   @Get()
@@ -27,7 +27,12 @@ export class PortfolioController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.portfolioService.findOne(+id);
+    return this.portfolioService.getPortfolioById(+id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.portfolioService.deletePortfolio(+id);
   }
 
   @Patch(':id')
@@ -35,11 +40,6 @@ export class PortfolioController {
     @Param('id') id: string,
     @Body() updatePortfolioDto: UpdatePortfolioDto,
   ) {
-    return this.portfolioService.update(+id, updatePortfolioDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.portfolioService.remove(+id);
+    return this.portfolioService.updatePortfolio(+id, updatePortfolioDto);
   }
 }

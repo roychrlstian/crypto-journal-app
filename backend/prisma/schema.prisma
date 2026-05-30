@@ -11,10 +11,20 @@ datasource db {
   provider = "postgresql"
 }
 
+model Portfolio {
+  id       Int     @id @default(autoincrement())
+  name     String
+  balance  Float
+  trades   Trade[]
+}
+
 model Trade {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   coin        String
   entry       Float
   quantity    Float
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+
+  portfolioId Int
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
 }

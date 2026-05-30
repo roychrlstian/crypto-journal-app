@@ -27,12 +27,12 @@ export class TradesController {
 
   @Get(':id')
   getTradeById(@Param('id') id: string) {
-    return this.tradesService.getTradeById(Number(id));
+    return this.tradesService.getTradeById(+id);
   }
 
   @Delete(':id')
   deleteTrades(@Param('id') id: string) {
-    return this.tradesService.deleteTrade(Number(id));
+    return this.tradesService.deleteTrade(+id);
   }
 
   @Patch(':id')
@@ -40,6 +40,6 @@ export class TradesController {
     @Param('id') id: string,
     @Body() updateTradeDto: UpdateTradeDto,
   ) {
-    return this.tradesService.updateTrade(Number(id), updateTradeDto);
+    return this.tradesService.updateTrade(+id, updateTradeDto);
   }
 }

@@ -1,35 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-import { Portfolio } from './portfolio.interface';
+import { PrismaService } from 'src/prisma/prisma.service';
 @Injectable()
 export class PortfolioService {
-  private portfolio: Portfolio[] = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  create(createPortfolioDto: CreatePortfolioDto) {
-    const newPortfolio = {
-      owner: createPortfolioDto.owner,
-      balance: createPortfolioDto.balance,
-      coins: createPortfolioDto.coins,
-    };
-
-    this.portfolio.push(newPortfolio);
-    return newPortfolio;
+  async createPortfolio(createPortfolioDto: CreatePortfolioDto) {
+    return await this.prisma.portfolio.create({
+      data: createPortfolioDto,
+    });
   }
 
-  findAll() {
-    return this.portfolio;
+  async findAll() {
+    return await this.prisma.portfolio.findMany({ include: { trades: true } });
   }
 
-  findOne(id: number) {
-    return this.portfolio[id];
+  async getPortfolioById(id: number) {
+    if (!id) {
+      throw new NotFoundException('Portfolio ID is required');
+    }
+
+    const portfolio = await this.prisma.portfolio.findUnique({
+      where: { id },
+      include: { trades: true },
+    });
+
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+    return portfolio;
   }
 
-  update(id: number, updatePortfolioDto: UpdatePortfolioDto) {
-    return `This action updates a #${id} portfolio`;
+  async updatePortfolio(id: number, updatePortfolioDto: UpdatePortfolioDto) {
+    const portfolio = await this.prisma.portfolio.findUnique({ where: { id } });
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+
+    return await this.prisma.portfolio.update({
+      where: { id },
+      data: updatePortfolioDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} portfolio`;
+  async deletePortfolio(id: number) {
+    if (!id) {
+      throw new NotFoundException('Portfolio ID is required');
+    }
+    const portfolio = await this.prisma.portfolio.findUnique({ where: { id } });
+    if (!portfolio) {
+      throw new NotFoundException('Portfolio not found');
+    }
+
+    return await this.prisma.portfolio.delete({ where: { id } });
   }
 }
