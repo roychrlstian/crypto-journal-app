@@ -8,4 +8,8 @@ export class CreatePortfolioDto {
   @IsNumber()
   @Min(0)
   balance!: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  userId!: number;
 }

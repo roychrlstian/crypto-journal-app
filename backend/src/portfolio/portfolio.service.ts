@@ -8,7 +8,11 @@ export class PortfolioService {
 
   async createPortfolio(createPortfolioDto: CreatePortfolioDto) {
     return await this.prisma.portfolio.create({
-      data: createPortfolioDto,
+      data: {
+        name: createPortfolioDto.name,
+        balance: createPortfolioDto.balance,
+        userId: createPortfolioDto.userId,
+      },
     });
   }
 

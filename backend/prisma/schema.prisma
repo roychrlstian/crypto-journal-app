@@ -11,10 +11,24 @@ datasource db {
   provider = "postgresql"
 }
 
+model User {
+  id           Int         @id @default(autoincrement())
+  email        String      @unique
+  passwordHash String
+
+  portfolios   Portfolio[]
+
+  createdAt    DateTime    @default(now())
+}
+
 model Portfolio {
   id       Int     @id @default(autoincrement())
   name     String
   balance  Float
+
+  userId   Int
+  user     User @relation(fields: [userId], references: [id])
+
   trades   Trade[]
 }
 
