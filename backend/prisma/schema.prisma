@@ -36,7 +36,9 @@ model Trade {
   id          Int       @id @default(autoincrement())
   coin        String
   entry       Float
+  exit        Float
   quantity    Float
+  status      String
   createdAt   DateTime  @default(now())
 
   portfolioId Int
