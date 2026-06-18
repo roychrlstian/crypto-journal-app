@@ -11,7 +11,15 @@ export class CreateTradeDto {
 
   @IsNumber()
   @Min(0)
+  exit!: number;
+
+  @IsNumber()
+  @Min(0)
   quantity!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  status!: string;
 
   @IsNumber()
   @IsNotEmpty()

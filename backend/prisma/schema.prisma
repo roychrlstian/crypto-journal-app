@@ -30,17 +30,20 @@ model Portfolio {
   user     User @relation(fields: [userId], references: [id])
 
   trades   Trade[]
+
+  createdAt DateTime @default(now())
 }
 
 model Trade {
   id          Int       @id @default(autoincrement())
   coin        String
   entry       Float
-  exit        Float
+  exit        Float?
   quantity    Float
   status      String
-  createdAt   DateTime  @default(now())
 
   portfolioId Int
   portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+
+  createdAt   DateTime  @default(now())
 }

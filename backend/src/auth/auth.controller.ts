@@ -4,7 +4,11 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt.auth-guard';
 import { CurrentUser } from './current-user.decorator';
-import { type JwtPayload } from './interface/jwt-payload.interface';
+
+interface JwtPayload {
+  userId: number;
+  email: string;
+}
 
 @Controller('auth')
 export class AuthController {

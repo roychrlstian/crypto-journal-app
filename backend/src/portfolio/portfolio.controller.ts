@@ -54,4 +54,9 @@ export class PortfolioController {
       userId,
     );
   }
+
+  @Get('stats')
+  getStats(@CurrentUser('userId') userId: number) {
+    return this.portfolioService.getPortfolioStats(userId);
+  }
 }

@@ -58,4 +58,42 @@ export class PortfolioService {
       where: { id: id },
     });
   }
+
+  async getPortfolioStats(userId: number) {
+    const portfolios = await this.prisma.portfolio.findMany({
+      where: { userId },
+      include: {
+        trades: true,
+      },
+    });
+
+    const openTrades = portfolios.reduce((acc, portfolio) => {
+      return (
+        acc + portfolio.trades.filter((trade) => trade.exit === null).length
+      );
+    }, 0);
+
+    const closedTrades = portfolios.reduce((acc, portfolio) => {
+      return (
+        acc + portfolio.trades.filter((trade) => trade.exit !== null).length
+      );
+    }, 0);
+
+    return portfolios.map((portfolio) => {
+      const totalTrades = portfolio.trades.length;
+      const totalProfitLoss = portfolio.trades.reduce((acc, trade) => {
+        const profitLoss = (trade.entry - (trade.exit || 0)) * trade.quantity;
+        return acc + profitLoss;
+      }, 0);
+
+      return {
+        portfolioId: portfolio.id,
+        name: portfolio.name,
+        totalTrades: totalTrades,
+        openTrades: openTrades,
+        closedTrades: closedTrades,
+        totalProfitLoss: totalProfitLoss,
+      };
+    });
+  }
 }
