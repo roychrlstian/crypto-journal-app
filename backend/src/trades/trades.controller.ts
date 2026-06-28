@@ -37,11 +37,6 @@ export class TradesController {
     return this.tradesService.getTrades(query, userId);
   }
 
-  // @Get()
-  // getAllTrades(@CurrentUser('userId') userId: number) {
-  //   return this.tradesService.findAll(userId);
-  // }
-
   @Get(':id')
   getTradeById(@Param('id') id: string, @CurrentUser('userId') userId: number) {
     return this.tradesService.getTradeById(+id, userId);

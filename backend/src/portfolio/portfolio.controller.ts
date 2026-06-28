@@ -11,8 +11,8 @@ import {
 import { PortfolioService } from './portfolio.service';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
-import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt.auth-guard';
+import { CurrentUser } from '../auth/current-user.decorator';
 
 @Controller('portfolio')
 @UseGuards(JwtAuthGuard)
