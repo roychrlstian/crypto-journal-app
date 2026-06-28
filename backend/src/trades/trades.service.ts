@@ -34,8 +34,8 @@ export class TradesService {
   }
 
   async getTrades(query: TradesPaginationDto, userId: number) {
-    const page = Number(query.page) || 1;
-    const limit = Number(query.limit) || 10;
+    const page = Number(query.page);
+    const limit = Number(query.limit);
     const skip = (page - 1) * limit;
     const { coin, status, sort = 'desc' } = query;
 
@@ -63,6 +63,16 @@ export class TradesService {
       }),
     ]);
 
+    if (total === 0) {
+      throw new NotFoundException('No trades found');
+    }
+
+    if (trades.length === 0) {
+      throw new NotFoundException(
+        `No trades found for page ${page} with limit ${limit}`,
+      );
+    }
+
     return {
       data: trades,
       meta: {
@@ -75,13 +85,19 @@ export class TradesService {
   }
 
   async findAll(userId: number) {
-    return this.prisma.trade.findMany({
+    const trades = await this.prisma.trade.findMany({
       where: {
         portfolio: {
           userId: userId,
         },
       },
     });
+
+    if (!trades || trades.length === 0) {
+      throw new NotFoundException(`No trades found for user ${userId}`);
+    }
+
+    return trades;
   }
 
   async getTradeById(id: number, userId: number) {

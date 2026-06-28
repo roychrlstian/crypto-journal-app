@@ -20,7 +20,15 @@ export class PortfolioService {
   }
 
   async findAll(userId: number) {
-    return await this.prisma.portfolio.findMany({ where: { userId } });
+    const portfolios = await this.prisma.portfolio.findMany({
+      where: { userId },
+    });
+
+    if (!portfolios || portfolios.length === 0) {
+      throw new NotFoundException(`No portfolios found for user ${userId}`);
+    }
+
+    return portfolios;
   }
 
   async getPortfolioById(id: number, userId: number) {
