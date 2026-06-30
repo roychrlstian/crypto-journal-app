@@ -50,8 +50,8 @@ export class TradesService {
       Fetching trades for user: ${userId} with query: ${JSON.stringify(query)}
       `);
 
-    const page = Number(query.page);
-    const limit = Number(query.limit);
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
     const skip = (page - 1) * limit;
     const { coin, status, sort = 'desc' } = query;
 
@@ -73,7 +73,7 @@ export class TradesService {
       this.prisma.trade.count({ where: whereClause }),
       this.prisma.trade.findMany({
         where: whereClause,
-        orderBy: { createdAt: sort },
+        orderBy: { createdAt: sort || 'desc' },
         skip: skip,
         take: limit,
       }),
@@ -130,6 +130,7 @@ export class TradesService {
     }
 
     const { portfolio, ...trade } = tradeWithPortfolio;
+    void portfolio;
 
     return trade;
   }
