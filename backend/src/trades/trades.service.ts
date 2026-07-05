@@ -32,6 +32,15 @@ export class TradesService {
       throw new NotFoundException('Portfolio not found');
     }
 
+    if (portfolio.userId !== userId) {
+      this.logger.warn(`
+        Trade creation failed for user: ${userId} - User does not own portfolio with ID ${createTradeDto.portfolioId}
+        `);
+      throw new ForbiddenException(
+        'You do not have permission to create a trade in this portfolio',
+      );
+    }
+
     const createTrade = await this.prisma.trade.create({
       data: {
         ...createTradeDto,

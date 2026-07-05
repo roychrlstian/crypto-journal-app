@@ -110,24 +110,20 @@ export class PortfolioService {
       throw new NotFoundException(`No portfolios found for user ${userId}`);
     }
 
-    const openTrades = portfolios.reduce((acc, portfolio) => {
-      return (
-        acc + portfolio.trades.filter((trade) => trade.exit === null).length
-      );
-    }, 0);
-
-    const closedTrades = portfolios.reduce((acc, portfolio) => {
-      return (
-        acc + portfolio.trades.filter((trade) => trade.exit !== null).length
-      );
-    }, 0);
-
     return portfolios.map((portfolio) => {
+      const openTrades = portfolio.trades.filter((trade) => trade.exit === null).length;
+      const closedTrades = portfolio.trades.filter(
+        (trade) => trade.exit !== null,
+      ).length;
       const totalTrades = portfolio.trades.length;
-      const totalProfitLoss = portfolio.trades.reduce((acc, trade) => {
-        const profitLoss = (trade.entry - (trade.exit || 0)) * trade.quantity;
-        return acc + profitLoss;
-      }, 0);
+      const totalProfitLoss = portfolio.trades
+        .filter((trade) => {
+          return trade.exit !== null;
+        })
+        .reduce((acc, trade) => {
+          const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
+          return acc + profitLoss;
+        }, 0);
 
       return {
         portfolioId: portfolio.id,

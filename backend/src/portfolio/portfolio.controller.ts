@@ -32,6 +32,11 @@ export class PortfolioController {
     return this.portfolioService.findAll(userId);
   }
 
+  @Get('stats')
+  getStats(@CurrentUser('userId') userId: number) {
+    return this.portfolioService.getPortfolioStats(userId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser('userId') userId: number) {
     return this.portfolioService.getPortfolioById(+id, userId);
@@ -53,10 +58,5 @@ export class PortfolioController {
       updatePortfolioDto,
       userId,
     );
-  }
-
-  @Get('stats')
-  getStats(@CurrentUser('userId') userId: number) {
-    return this.portfolioService.getPortfolioStats(userId);
   }
 }

@@ -1,4 +1,4 @@
-import { IsNumber, IsString, IsNotEmpty, Min } from 'class-validator';
+import { IsNumber, IsString, IsNotEmpty, Min, IsOptional } from 'class-validator';
 
 export class CreateTradeDto {
   @IsString()
@@ -10,8 +10,9 @@ export class CreateTradeDto {
   entry!: number;
 
   @IsNumber()
+  @IsOptional()
   @Min(0)
-  exit!: number;
+  exit?: number;
 
   @IsNumber()
   @Min(0)
