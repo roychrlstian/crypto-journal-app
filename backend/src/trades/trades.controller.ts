@@ -12,8 +12,8 @@ import {
 import { TradesService } from './trades.service';
 import { CreateTradeDto } from './dto/create-trades.dto';
 import { UpdateTradeDto } from './dto/update-trade.dto';
-import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
-import { CurrentUser } from 'src/auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt.auth-guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { TradesPaginationDto } from './dto/pagination.dto';
 
 @Controller('trades')

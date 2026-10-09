@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt.auth-guard';
-import { CurrentUser } from './current-user.decorator';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
 interface JwtPayload {
   userId: number;

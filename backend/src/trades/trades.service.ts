@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { CreateTradeDto } from './dto/create-trades.dto';
 import { UpdateTradeDto } from './dto/update-trade.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { TradesPaginationDto } from './dto/pagination.dto';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../generated/prisma/client';
 
 @Injectable()
 export class TradesService {
