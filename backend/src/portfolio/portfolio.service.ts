@@ -2,6 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { PrismaService } from '../prisma/prisma.service';
+
 @Injectable()
 export class PortfolioService {
   private readonly logger = new Logger(PortfolioService.name);
