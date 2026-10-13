@@ -45,6 +45,7 @@ export type TradeSumAggregateOutputType = {
 export type TradeMinAggregateOutputType = {
   id: number | null
   coin: string | null
+  position: $Enums.Position | null
   entry: number | null
   exit: number | null
   quantity: number | null
@@ -56,6 +57,7 @@ export type TradeMinAggregateOutputType = {
 export type TradeMaxAggregateOutputType = {
   id: number | null
   coin: string | null
+  position: $Enums.Position | null
   entry: number | null
   exit: number | null
   quantity: number | null
@@ -67,6 +69,7 @@ export type TradeMaxAggregateOutputType = {
 export type TradeCountAggregateOutputType = {
   id: number
   coin: number
+  position: number
   entry: number
   exit: number
   quantity: number
@@ -96,6 +99,7 @@ export type TradeSumAggregateInputType = {
 export type TradeMinAggregateInputType = {
   id?: true
   coin?: true
+  position?: true
   entry?: true
   exit?: true
   quantity?: true
@@ -107,6 +111,7 @@ export type TradeMinAggregateInputType = {
 export type TradeMaxAggregateInputType = {
   id?: true
   coin?: true
+  position?: true
   entry?: true
   exit?: true
   quantity?: true
@@ -118,6 +123,7 @@ export type TradeMaxAggregateInputType = {
 export type TradeCountAggregateInputType = {
   id?: true
   coin?: true
+  position?: true
   entry?: true
   exit?: true
   quantity?: true
@@ -216,6 +222,7 @@ export type TradeGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type TradeGroupByOutputType = {
   id: number
   coin: string
+  position: $Enums.Position
   entry: number
   exit: number | null
   quantity: number
@@ -250,6 +257,7 @@ export type TradeWhereInput = {
   NOT?: Prisma.TradeWhereInput | Prisma.TradeWhereInput[]
   id?: Prisma.IntFilter<"Trade"> | number
   coin?: Prisma.StringFilter<"Trade"> | string
+  position?: Prisma.EnumPositionFilter<"Trade"> | $Enums.Position
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
@@ -262,6 +270,7 @@ export type TradeWhereInput = {
 export type TradeOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   coin?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   entry?: Prisma.SortOrder
   exit?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -277,6 +286,7 @@ export type TradeWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.TradeWhereInput[]
   NOT?: Prisma.TradeWhereInput | Prisma.TradeWhereInput[]
   coin?: Prisma.StringFilter<"Trade"> | string
+  position?: Prisma.EnumPositionFilter<"Trade"> | $Enums.Position
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
@@ -289,6 +299,7 @@ export type TradeWhereUniqueInput = Prisma.AtLeast<{
 export type TradeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   coin?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   entry?: Prisma.SortOrder
   exit?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -308,6 +319,7 @@ export type TradeScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TradeScalarWhereWithAggregatesInput | Prisma.TradeScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"Trade"> | number
   coin?: Prisma.StringWithAggregatesFilter<"Trade"> | string
+  position?: Prisma.EnumPositionWithAggregatesFilter<"Trade"> | $Enums.Position
   entry?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
   exit?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
   quantity?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
@@ -318,6 +330,7 @@ export type TradeScalarWhereWithAggregatesInput = {
 
 export type TradeCreateInput = {
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -329,6 +342,7 @@ export type TradeCreateInput = {
 export type TradeUncheckedCreateInput = {
   id?: number
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -339,6 +353,7 @@ export type TradeUncheckedCreateInput = {
 
 export type TradeUpdateInput = {
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -350,6 +365,7 @@ export type TradeUpdateInput = {
 export type TradeUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -361,6 +377,7 @@ export type TradeUncheckedUpdateInput = {
 export type TradeCreateManyInput = {
   id?: number
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -371,6 +388,7 @@ export type TradeCreateManyInput = {
 
 export type TradeUpdateManyMutationInput = {
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -381,6 +399,7 @@ export type TradeUpdateManyMutationInput = {
 export type TradeUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -402,6 +421,7 @@ export type TradeOrderByRelationAggregateInput = {
 export type TradeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   coin?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   entry?: Prisma.SortOrder
   exit?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -421,6 +441,7 @@ export type TradeAvgOrderByAggregateInput = {
 export type TradeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   coin?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   entry?: Prisma.SortOrder
   exit?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -432,6 +453,7 @@ export type TradeMaxOrderByAggregateInput = {
 export type TradeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   coin?: Prisma.SortOrder
+  position?: Prisma.SortOrder
   entry?: Prisma.SortOrder
   exit?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
@@ -490,6 +512,10 @@ export type TradeUncheckedUpdateManyWithoutPortfolioNestedInput = {
   deleteMany?: Prisma.TradeScalarWhereInput | Prisma.TradeScalarWhereInput[]
 }
 
+export type EnumPositionFieldUpdateOperationsInput = {
+  set?: $Enums.Position
+}
+
 export type NullableFloatFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -500,6 +526,7 @@ export type NullableFloatFieldUpdateOperationsInput = {
 
 export type TradeCreateWithoutPortfolioInput = {
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -510,6 +537,7 @@ export type TradeCreateWithoutPortfolioInput = {
 export type TradeUncheckedCreateWithoutPortfolioInput = {
   id?: number
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -549,6 +577,7 @@ export type TradeScalarWhereInput = {
   NOT?: Prisma.TradeScalarWhereInput | Prisma.TradeScalarWhereInput[]
   id?: Prisma.IntFilter<"Trade"> | number
   coin?: Prisma.StringFilter<"Trade"> | string
+  position?: Prisma.EnumPositionFilter<"Trade"> | $Enums.Position
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
@@ -560,6 +589,7 @@ export type TradeScalarWhereInput = {
 export type TradeCreateManyPortfolioInput = {
   id?: number
   coin: string
+  position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
@@ -569,6 +599,7 @@ export type TradeCreateManyPortfolioInput = {
 
 export type TradeUpdateWithoutPortfolioInput = {
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -579,6 +610,7 @@ export type TradeUpdateWithoutPortfolioInput = {
 export type TradeUncheckedUpdateWithoutPortfolioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -589,6 +621,7 @@ export type TradeUncheckedUpdateWithoutPortfolioInput = {
 export type TradeUncheckedUpdateManyWithoutPortfolioInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   coin?: Prisma.StringFieldUpdateOperationsInput | string
+  position?: Prisma.EnumPositionFieldUpdateOperationsInput | $Enums.Position
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
@@ -601,6 +634,7 @@ export type TradeUncheckedUpdateManyWithoutPortfolioInput = {
 export type TradeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   coin?: boolean
+  position?: boolean
   entry?: boolean
   exit?: boolean
   quantity?: boolean
@@ -613,6 +647,7 @@ export type TradeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type TradeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   coin?: boolean
+  position?: boolean
   entry?: boolean
   exit?: boolean
   quantity?: boolean
@@ -625,6 +660,7 @@ export type TradeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type TradeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   coin?: boolean
+  position?: boolean
   entry?: boolean
   exit?: boolean
   quantity?: boolean
@@ -637,6 +673,7 @@ export type TradeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type TradeSelectScalar = {
   id?: boolean
   coin?: boolean
+  position?: boolean
   entry?: boolean
   exit?: boolean
   quantity?: boolean
@@ -645,7 +682,7 @@ export type TradeSelectScalar = {
   createdAt?: boolean
 }
 
-export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coin" | "entry" | "exit" | "quantity" | "status" | "portfolioId" | "createdAt", ExtArgs["result"]["trade"]>
+export type TradeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "coin" | "position" | "entry" | "exit" | "quantity" | "status" | "portfolioId" | "createdAt", ExtArgs["result"]["trade"]>
 export type TradeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   portfolio?: boolean | Prisma.PortfolioDefaultArgs<ExtArgs>
 }
@@ -664,6 +701,7 @@ export type $TradePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     coin: string
+    position: $Enums.Position
     entry: number
     exit: number | null
     quantity: number
@@ -1096,6 +1134,7 @@ export interface Prisma__TradeClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface TradeFieldRefs {
   readonly id: Prisma.FieldRef<"Trade", 'Int'>
   readonly coin: Prisma.FieldRef<"Trade", 'String'>
+  readonly position: Prisma.FieldRef<"Trade", 'Position'>
   readonly entry: Prisma.FieldRef<"Trade", 'Float'>
   readonly exit: Prisma.FieldRef<"Trade", 'Float'>
   readonly quantity: Prisma.FieldRef<"Trade", 'Float'>

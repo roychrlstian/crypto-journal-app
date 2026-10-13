@@ -704,6 +704,7 @@ export type PortfolioScalarFieldEnum = (typeof PortfolioScalarFieldEnum)[keyof t
 export const TradeScalarFieldEnum = {
   id: 'id',
   coin: 'coin',
+  position: 'position',
   entry: 'entry',
   exit: 'exit',
   quantity: 'quantity',
@@ -798,6 +799,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Position'
+ */
+export type EnumPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Position'>
+    
+
+
+/**
+ * Reference to a field of type 'Position[]'
+ */
+export type ListEnumPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Position[]'>
     
 
 /**

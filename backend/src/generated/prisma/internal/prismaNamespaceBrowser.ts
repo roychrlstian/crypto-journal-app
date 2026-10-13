@@ -96,6 +96,7 @@ export type PortfolioScalarFieldEnum = (typeof PortfolioScalarFieldEnum)[keyof t
 export const TradeScalarFieldEnum = {
   id: 'id',
   coin: 'coin',
+  position: 'position',
   entry: 'entry',
   exit: 'exit',
   quantity: 'quantity',

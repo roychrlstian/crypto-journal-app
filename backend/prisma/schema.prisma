@@ -12,6 +12,11 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Position {
+  LONG
+  SHORT
+}
+
 model User {
   id           Int         @id @default(autoincrement())
   email        String      @unique
@@ -38,6 +43,7 @@ model Portfolio {
 model Trade {
   id          Int       @id @default(autoincrement())
   coin        String
+  position    Position @default(LONG)
   entry       Float
   exit        Float?
   quantity    Float
