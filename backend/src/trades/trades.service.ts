@@ -9,6 +9,7 @@ import { UpdateTradeDto } from './dto/update-trade.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { TradesPaginationDto } from './dto/pagination.dto';
 import { Prisma } from '../generated/prisma/client';
+import { calculateRealizedPnl } from './pnl.util';
 
 @Injectable()
 export class TradesService {
@@ -88,6 +89,20 @@ export class TradesService {
       }),
     ]);
 
+    const tradesWithPnl = trades.map((trade) => {
+      const realizedPnl =
+        trade.status === 'CLOSED'
+          ? calculateRealizedPnl({
+              position: trade.position,
+              entry: trade.entry,
+              exit: trade.exit,
+              quantity: trade.quantity,
+            })
+          : null;
+
+      return { ...trade, realizedPnl };
+    });
+
     if (total === 0) {
       this.logger.warn(`No trades found for user: ${userId}`);
       throw new NotFoundException('No trades found');
@@ -103,7 +118,7 @@ export class TradesService {
     }
 
     return {
-      data: trades,
+      data: tradesWithPnl,
       meta: {
         totalItems: total,
         itemsPerPage: limit,
@@ -113,35 +128,22 @@ export class TradesService {
     };
   }
 
-  // async findAll(userId: number) {
-  //   const trades = await this.prisma.trade.findMany({
-  //     where: {
-  //       portfolio: {
-  //         userId: userId,
-  //       },
-  //     },
-  //   });
-
-  //   if (!trades || trades.length === 0) {
-  //     throw new NotFoundException(`No trades found for user ${userId}`);
-  //   }
-
-  //   return trades;
-  // }
-
   async getTradeById(id: number, userId: number) {
     this.logger.log(`Fetching trade by ID: ${id} for user: ${userId}`);
-    const tradeWithPortfolio = await this.verifyTradeOwnership(id, userId);
-
-    if (!tradeWithPortfolio) {
-      this.logger.warn(`Trade not found for user: ${userId}`);
-      throw new NotFoundException('Trade not found');
-    }
-
-    const { portfolio, ...trade } = tradeWithPortfolio;
+    const { portfolio, ...trade } = await this.verifyTradeOwnership(id, userId);
     void portfolio;
+    
+    const realizedPnl =
+      trade.status === 'CLOSED'
+        ? calculateRealizedPnl({
+            position: trade.position,
+            entry: trade.entry,
+            exit: trade.exit,
+            quantity: trade.quantity,
+          })
+        : null;
 
-    return trade;
+    return { ...trade, realizedPnl };
   }
 
   async deleteTrade(id: number, userId: number) {
