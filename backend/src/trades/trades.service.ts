@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -17,6 +18,7 @@ export class TradesService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+//CREATE TRADE FUNCTION
   async createTrade(createTradeDto: CreateTradeDto, userId: number) {
     this.logger.log(`
       Creating trade for user: ${userId} in portfolio: ${createTradeDto.portfolioId}
@@ -44,7 +46,13 @@ export class TradesService {
 
     const createTrade = await this.prisma.trade.create({
       data: {
-        ...createTradeDto,
+        coin: createTradeDto.coin,
+        position: createTradeDto.position ?? 'LONG',
+        entry: createTradeDto.entry,
+        quantity: createTradeDto.quantity,
+        status: 'OPEN',
+        exit: null,
+        portfolioId: createTradeDto.portfolioId,
       },
     });
 
@@ -54,7 +62,9 @@ export class TradesService {
 
     return createTrade;
   }
+//END CREATE TRADE FUNCTION
 
+//GET TRADES FUNCTION
   async getTrades(query: TradesPaginationDto, userId: number) {
     this.logger.log(`
       Fetching trades for user: ${userId} with query: ${JSON.stringify(query)}
@@ -127,7 +137,9 @@ export class TradesService {
       },
     };
   }
+//END GET TRADES FUNCTION
 
+//GET TRADE BY ID FUNCTION
   async getTradeById(id: number, userId: number) {
     this.logger.log(`Fetching trade by ID: ${id} for user: ${userId}`);
     const { portfolio, ...trade } = await this.verifyTradeOwnership(id, userId);
@@ -145,25 +157,94 @@ export class TradesService {
 
     return { ...trade, realizedPnl };
   }
+//END GET TRADE BY ID FUNCTION
 
+//DELETE TRADE FUNCTION
   async deleteTrade(id: number, userId: number) {
     this.logger.log(`Deleting trade ID: ${id} for user: ${userId}`);
     await this.verifyTradeOwnership(id, userId);
 
     return this.prisma.trade.delete({ where: { id } });
   }
+//END DELETE TRADE FUNCTION
 
-  async updateTrade(
-    id: number,
-    updateTradeDto: UpdateTradeDto,
-    userId: number,
-  ) {
+//UPDATE TRADE FUNCTION
+  async updateTrade(id: number, updateTradeDto: UpdateTradeDto, userId: number) {
     this.logger.log(`Updating trade ID: ${id} for user: ${userId}`);
-    await this.verifyTradeOwnership(id, userId);
 
-    return this.prisma.trade.update({ where: { id }, data: updateTradeDto });
+    const trade = await this.verifyTradeOwnership(id, userId);
+
+    if (trade.status === 'OPEN' && updateTradeDto.exit !== undefined) {
+      throw new BadRequestException(
+        'Use the close trade operation to set an exit price',
+      );
+    }
+
+    const updatedTrade = await this.prisma.trade.update({
+      where: { id },
+      data: updateTradeDto,
+    });
+
+    const realizedPnl =
+      updatedTrade.status === 'CLOSED'
+        ? calculateRealizedPnl({
+            position: updatedTrade.position,
+            entry: updatedTrade.entry,
+            exit: updatedTrade.exit,
+            quantity: updatedTrade.quantity,
+          })
+        : null;
+
+    return { ...updatedTrade, realizedPnl };
   }
+//END UPDATE TRADE FUNCTION
 
+//CLOSE TRADE FUNCTION
+  async closeTrade(id: number, exit: number, userId: number) {
+    this.logger.log(`Closing trade ID: ${id} for user: ${userId}`);
+
+    const trade = await this.verifyTradeOwnership(id, userId);
+
+    if (trade.status !== 'OPEN') {
+      throw new BadRequestException('Trade is already closed');
+    }
+
+    const updatedTrade = await this.prisma.trade.updateMany({
+      where: {
+        id,
+        status: 'OPEN',
+        portfolio: {
+          userId,
+        },
+      },
+      data: {
+        exit,
+        status: 'CLOSED',
+      },
+    });
+
+    if (updatedTrade.count === 0) {
+      throw new BadRequestException(
+        'Trade has already been closed or modified',
+      );
+    }
+
+    const closedTrade = await this.prisma.trade.findUniqueOrThrow({
+      where: { id },
+    });
+
+    const realizedPnl = calculateRealizedPnl({
+      position: closedTrade.position,
+      entry: closedTrade.entry,
+      exit: closedTrade.exit,
+      quantity: closedTrade.quantity,
+    });
+
+    return { ...closedTrade, realizedPnl };
+  }
+//END CLOSE TRADE FUNCTION
+
+//VERIFY TRADE OWNERSHIP FUNCTION
   private async verifyTradeOwnership(tradeId: number, userId: number) {
     const trade = await this.prisma.trade.findUnique({
       where: { id: tradeId },
@@ -188,4 +269,5 @@ export class TradesService {
 
     return trade;
   }
+//END VERIFY TRADE OWNERSHIP FUNCTION
 }

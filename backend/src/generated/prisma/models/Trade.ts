@@ -49,7 +49,7 @@ export type TradeMinAggregateOutputType = {
   entry: number | null
   exit: number | null
   quantity: number | null
-  status: string | null
+  status: $Enums.TradeStatus | null
   portfolioId: number | null
   createdAt: Date | null
 }
@@ -61,7 +61,7 @@ export type TradeMaxAggregateOutputType = {
   entry: number | null
   exit: number | null
   quantity: number | null
-  status: string | null
+  status: $Enums.TradeStatus | null
   portfolioId: number | null
   createdAt: Date | null
 }
@@ -226,7 +226,7 @@ export type TradeGroupByOutputType = {
   entry: number
   exit: number | null
   quantity: number
-  status: string
+  status: $Enums.TradeStatus
   portfolioId: number
   createdAt: Date
   _count: TradeCountAggregateOutputType | null
@@ -261,7 +261,7 @@ export type TradeWhereInput = {
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
-  status?: Prisma.StringFilter<"Trade"> | string
+  status?: Prisma.EnumTradeStatusFilter<"Trade"> | $Enums.TradeStatus
   portfolioId?: Prisma.IntFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   portfolio?: Prisma.XOR<Prisma.PortfolioScalarRelationFilter, Prisma.PortfolioWhereInput>
@@ -290,7 +290,7 @@ export type TradeWhereUniqueInput = Prisma.AtLeast<{
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
-  status?: Prisma.StringFilter<"Trade"> | string
+  status?: Prisma.EnumTradeStatusFilter<"Trade"> | $Enums.TradeStatus
   portfolioId?: Prisma.IntFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
   portfolio?: Prisma.XOR<Prisma.PortfolioScalarRelationFilter, Prisma.PortfolioWhereInput>
@@ -323,7 +323,7 @@ export type TradeScalarWhereWithAggregatesInput = {
   entry?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
   exit?: Prisma.FloatNullableWithAggregatesFilter<"Trade"> | number | null
   quantity?: Prisma.FloatWithAggregatesFilter<"Trade"> | number
-  status?: Prisma.StringWithAggregatesFilter<"Trade"> | string
+  status?: Prisma.EnumTradeStatusWithAggregatesFilter<"Trade"> | $Enums.TradeStatus
   portfolioId?: Prisma.IntWithAggregatesFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Trade"> | Date | string
 }
@@ -334,7 +334,7 @@ export type TradeCreateInput = {
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   createdAt?: Date | string
   portfolio: Prisma.PortfolioCreateNestedOneWithoutTradesInput
 }
@@ -346,7 +346,7 @@ export type TradeUncheckedCreateInput = {
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   portfolioId: number
   createdAt?: Date | string
 }
@@ -357,7 +357,7 @@ export type TradeUpdateInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   portfolio?: Prisma.PortfolioUpdateOneRequiredWithoutTradesNestedInput
 }
@@ -369,7 +369,7 @@ export type TradeUncheckedUpdateInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   portfolioId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -381,7 +381,7 @@ export type TradeCreateManyInput = {
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   portfolioId: number
   createdAt?: Date | string
 }
@@ -392,7 +392,7 @@ export type TradeUpdateManyMutationInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -403,7 +403,7 @@ export type TradeUncheckedUpdateManyInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   portfolioId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -524,13 +524,17 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type EnumTradeStatusFieldUpdateOperationsInput = {
+  set?: $Enums.TradeStatus
+}
+
 export type TradeCreateWithoutPortfolioInput = {
   coin: string
   position?: $Enums.Position
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   createdAt?: Date | string
 }
 
@@ -541,7 +545,7 @@ export type TradeUncheckedCreateWithoutPortfolioInput = {
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   createdAt?: Date | string
 }
 
@@ -581,7 +585,7 @@ export type TradeScalarWhereInput = {
   entry?: Prisma.FloatFilter<"Trade"> | number
   exit?: Prisma.FloatNullableFilter<"Trade"> | number | null
   quantity?: Prisma.FloatFilter<"Trade"> | number
-  status?: Prisma.StringFilter<"Trade"> | string
+  status?: Prisma.EnumTradeStatusFilter<"Trade"> | $Enums.TradeStatus
   portfolioId?: Prisma.IntFilter<"Trade"> | number
   createdAt?: Prisma.DateTimeFilter<"Trade"> | Date | string
 }
@@ -593,7 +597,7 @@ export type TradeCreateManyPortfolioInput = {
   entry: number
   exit?: number | null
   quantity: number
-  status: string
+  status?: $Enums.TradeStatus
   createdAt?: Date | string
 }
 
@@ -603,7 +607,7 @@ export type TradeUpdateWithoutPortfolioInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -614,7 +618,7 @@ export type TradeUncheckedUpdateWithoutPortfolioInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -625,7 +629,7 @@ export type TradeUncheckedUpdateManyWithoutPortfolioInput = {
   entry?: Prisma.FloatFieldUpdateOperationsInput | number
   exit?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number
-  status?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumTradeStatusFieldUpdateOperationsInput | $Enums.TradeStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -705,7 +709,7 @@ export type $TradePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     entry: number
     exit: number | null
     quantity: number
-    status: string
+    status: $Enums.TradeStatus
     portfolioId: number
     createdAt: Date
   }, ExtArgs["result"]["trade"]>
@@ -1138,7 +1142,7 @@ export interface TradeFieldRefs {
   readonly entry: Prisma.FieldRef<"Trade", 'Float'>
   readonly exit: Prisma.FieldRef<"Trade", 'Float'>
   readonly quantity: Prisma.FieldRef<"Trade", 'Float'>
-  readonly status: Prisma.FieldRef<"Trade", 'String'>
+  readonly status: Prisma.FieldRef<"Trade", 'TradeStatus'>
   readonly portfolioId: Prisma.FieldRef<"Trade", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Trade", 'DateTime'>
 }

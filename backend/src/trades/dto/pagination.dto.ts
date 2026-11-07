@@ -1,5 +1,6 @@
-import { IsInt, IsOptional, Min, Max, IsString, IsIn } from 'class-validator';
+import { IsInt, IsOptional, Min, Max, IsString, IsIn, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
+import { TradeStatus } from '../../generated/prisma/browser';
 
 export class TradesPaginationDto {
   @IsOptional()
@@ -20,12 +21,12 @@ export class TradesPaginationDto {
   coin?: string;
 
   @IsOptional()
-  @IsString()
-  exchange?: string;
+  @IsEnum(TradeStatus)
+  status?: TradeStatus;
 
   @IsOptional()
   @IsString()
-  status?: string;
+  exchange?: string;
 
   @IsOptional()
   @IsIn(['asc', 'desc'])

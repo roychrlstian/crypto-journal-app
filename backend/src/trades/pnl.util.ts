@@ -1,5 +1,5 @@
 import { BadRequestException } from "@nestjs/common";
-import { Position } from "../generated/prisma/client";
+import { Position } from "../generated/prisma/enums";
 
 interface PnlInput {
     position: Position;
@@ -23,7 +23,7 @@ export function calculateRealizedPnl(input: PnlInput): number {
         entry <= 0 || exit <= 0 || quantity <= 0
     ){
         throw new BadRequestException(
-            'Entry, exit, and quantity must be finite numbers greater than or equal to zero.'
+            'Entry, exit, and quantity must be finite numbers greater than to zero.'
         )
     }
 

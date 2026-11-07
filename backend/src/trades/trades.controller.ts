@@ -15,6 +15,7 @@ import { UpdateTradeDto } from './dto/update-trade.dto';
 import { JwtAuthGuard } from '../auth/jwt.auth-guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { TradesPaginationDto } from './dto/pagination.dto';
+import { CloseTradeDto } from './dto/close-trade.dto';
 
 @Controller('trades')
 @UseGuards(JwtAuthGuard)
@@ -54,5 +55,14 @@ export class TradesController {
     @CurrentUser('userId') userId: number,
   ) {
     return this.tradesService.updateTrade(+id, updateTradeDto, userId);
+  }
+
+  @Patch(':id/close')
+  closeTrade(
+    @Param('id') id: string,
+    @Body() closeTradeDto: CloseTradeDto,
+    @CurrentUser('userId') userId: number
+  ) {
+    return this.tradesService.closeTrade(+id, closeTradeDto.exit, userId);
   }
 }

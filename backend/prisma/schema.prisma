@@ -17,6 +17,11 @@ enum Position {
   SHORT
 }
 
+enum TradeStatus {
+  OPEN
+  CLOSED
+}
+
 model User {
   id           Int         @id @default(autoincrement())
   email        String      @unique
@@ -47,7 +52,7 @@ model Trade {
   entry       Float
   exit        Float?
   quantity    Float
-  status      String
+  status      TradeStatus @default(OPEN)
 
   portfolioId Int
   portfolio   Portfolio @relation(fields: [portfolioId], references: [id])

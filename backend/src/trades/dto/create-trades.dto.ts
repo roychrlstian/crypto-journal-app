@@ -1,4 +1,12 @@
-import { IsNumber, IsString, IsNotEmpty, Min, IsOptional, IsEnum } from 'class-validator';
+import { 
+  IsNumber,
+  IsString,
+  IsNotEmpty,
+  Min,
+  IsOptional,
+  IsEnum,
+  IsInt
+} from 'class-validator';
 import { Position } from '../../generated/prisma/browser';
 
 export class CreateTradeDto {
@@ -7,27 +15,19 @@ export class CreateTradeDto {
   coin!: string;
 
   @IsNumber()
-  @Min(0)
+  @Min(0.00000001)
   entry!: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Min(0)
-  exit?: number;
 
   @IsOptional()
   @IsEnum(Position)
   position?: Position;
 
   @IsNumber()
-  @Min(0)
+  @Min(0.00000001)
   quantity!: number;
 
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  status!: string;
-
-  @IsNumber()
-  @IsNotEmpty()
+  @Min(1)
   portfolioId!: number;
 }

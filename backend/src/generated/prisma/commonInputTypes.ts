@@ -144,6 +144,13 @@ export type FloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
+export type EnumTradeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TradeStatus | Prisma.EnumTradeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel> | $Enums.TradeStatus
+}
+
 export type SortOrderInput = {
   sort: Prisma.SortOrder
   nulls?: Prisma.NullsOrder
@@ -173,6 +180,16 @@ export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>
   _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>
+}
+
+export type EnumTradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TradeStatus | Prisma.EnumTradeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.TradeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel>
 }
 
 export type NestedIntFilter<$PrismaModel = never> = {
@@ -303,6 +320,13 @@ export type NestedFloatNullableFilter<$PrismaModel = never> = {
   not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null
 }
 
+export type NestedEnumTradeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.TradeStatus | Prisma.EnumTradeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel> | $Enums.TradeStatus
+}
+
 export type NestedEnumPositionWithAggregatesFilter<$PrismaModel = never> = {
   equals?: $Enums.Position | Prisma.EnumPositionFieldRefInput<$PrismaModel>
   in?: $Enums.Position[] | Prisma.ListEnumPositionFieldRefInput<$PrismaModel>
@@ -338,6 +362,16 @@ export type NestedIntNullableFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntNullableFilter<$PrismaModel> | number | null
+}
+
+export type NestedEnumTradeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.TradeStatus | Prisma.EnumTradeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.TradeStatus[] | Prisma.ListEnumTradeStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumTradeStatusWithAggregatesFilter<$PrismaModel> | $Enums.TradeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumTradeStatusFilter<$PrismaModel>
 }
 
 

@@ -815,6 +815,20 @@ export type EnumPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 export type ListEnumPositionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Position[]'>
     
 
+
+/**
+ * Reference to a field of type 'TradeStatus'
+ */
+export type EnumTradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TradeStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'TradeStatus[]'
+ */
+export type ListEnumTradeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'TradeStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */

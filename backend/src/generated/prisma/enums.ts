@@ -15,3 +15,11 @@ export const Position = {
 } as const
 
 export type Position = (typeof Position)[keyof typeof Position]
+
+
+export const TradeStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED'
+} as const
+
+export type TradeStatus = (typeof TradeStatus)[keyof typeof TradeStatus]
