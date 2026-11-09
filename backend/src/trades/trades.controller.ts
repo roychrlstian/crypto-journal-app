@@ -38,6 +38,11 @@ export class TradesController {
     return this.tradesService.getTrades(query, userId);
   }
 
+  @Get('statistics')
+  getStatistics(@CurrentUser('userId') userId: number) {
+    return this.tradesService.getStatistics(userId);
+  }
+
   @Get(':id')
   getTradeById(@Param('id') id: string, @CurrentUser('userId') userId: number) {
     return this.tradesService.getTradeById(+id, userId);
@@ -61,7 +66,7 @@ export class TradesController {
   closeTrade(
     @Param('id') id: string,
     @Body() closeTradeDto: CloseTradeDto,
-    @CurrentUser('userId') userId: number
+    @CurrentUser('userId') userId: number,
   ) {
     return this.tradesService.closeTrade(+id, closeTradeDto.exit, userId);
   }

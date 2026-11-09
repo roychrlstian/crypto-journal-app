@@ -244,6 +244,84 @@ export class TradesService {
   }
 //END CLOSE TRADE FUNCTION
 
+//GET STATISTICS FUNCTION
+  async getStatistics(userId: number){
+
+    const[closedTrades, totalTrades] = await Promise.all([
+      this.prisma.trade.findMany({
+        where: {
+          status: 'CLOSED',
+          portfolio: {
+            userId: userId,
+          },
+        },
+      }),
+      this.prisma.trade.count({
+        where: {
+          portfolio: {
+            userId: userId,
+          },
+        },
+      }),
+    ]);
+
+    const tradesWithPnl = closedTrades.map((trade) => {
+      const realizedPnl = calculateRealizedPnl({
+        position: trade.position,
+        entry: trade.entry,
+        exit: trade.exit,
+        quantity: trade.quantity,
+      });
+
+      return {...trade, realizedPnl};
+    });
+
+    const winningTrades = tradesWithPnl.filter((trade) => { return trade.realizedPnl > 0;});
+    const losingTrades = tradesWithPnl.filter((trade) => { return trade.realizedPnl < 0;});
+    const breakevenTrades = tradesWithPnl.filter((trade) => { return trade.realizedPnl === 0;});
+
+    const winRate = closedTrades.length > 0
+      ? Number(((winningTrades.length / closedTrades.length)*100).toFixed(2)) 
+      : 0;
+    const totalRealizedPnl = tradesWithPnl.length > 0 
+      ? Number(tradesWithPnl.reduce((pnl, trade) => pnl + trade.realizedPnl, 0).toFixed(2)) 
+      : 0;
+    const averageWinningPnl = winningTrades.length > 0
+      ? Number((winningTrades.reduce((pnl, trade) => pnl + trade.realizedPnl, 0) / winningTrades.length).toFixed(2))
+      : 0;
+    const averageLosingPnl = losingTrades.length > 0
+      ? Number((losingTrades.reduce((pnl, trade) => pnl + trade.realizedPnl, 0) / losingTrades.length).toFixed(2))
+      : 0;
+    const bestTrade = winningTrades.length > 0
+     ? winningTrades.reduce((best, trade) => trade.realizedPnl > best.realizedPnl ? trade : best, winningTrades[0])
+     : null;
+    const worstTrade = losingTrades.length > 0
+     ? losingTrades.reduce((worst, trade) => trade.realizedPnl < worst.realizedPnl ? trade : worst, losingTrades[0])
+     : null;
+
+    const closedTradesCount = closedTrades.length > 0 ? closedTrades.length : 0;
+    const openTradesCount = (totalTrades - closedTradesCount) > 0 ? (totalTrades - closedTradesCount) : 0;
+    const winningTradesCount = winningTrades.length > 0 ? winningTrades.length : 0;
+    const losingTradesCount = losingTrades.length > 0 ? losingTrades.length : 0;
+    const breakevenTradesCount = breakevenTrades.length > 0 ? breakevenTrades.length : 0;
+
+    return {
+      totalRealizedPnl,
+      averageWinningPnl,
+      averageLosingPnl,
+      winRate,
+      totalTrades,
+      bestTrade,
+      worstTrade,
+      closedTradesCount,
+      openTradesCount,
+      winningTradesCount,
+      losingTradesCount,
+      breakevenTradesCount,
+    };    
+  }
+//END GET STATISTICS FUNCTION
+
 //VERIFY TRADE OWNERSHIP FUNCTION
   private async verifyTradeOwnership(tradeId: number, userId: number) {
     const trade = await this.prisma.trade.findUnique({
