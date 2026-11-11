@@ -25,35 +25,57 @@ export class TradesService {
       `);
 
     const portfolio = await this.prisma.portfolio.findUnique({
-      where: { id: createTradeDto.portfolioId },
+      where: {
+        id: createTradeDto.portfolioId,
+      },
     });
 
     if (!portfolio) {
-      this.logger.warn(`
-        Trade creation failed for user: ${userId} - Portfolio with ID ${createTradeDto.portfolioId} not found
-        `);
       throw new NotFoundException('Portfolio not found');
     }
 
     if (portfolio.userId !== userId) {
-      this.logger.warn(`
-        Trade creation failed for user: ${userId} - User does not own portfolio with ID ${createTradeDto.portfolioId}
-        `);
       throw new ForbiddenException(
         'You do not have permission to create a trade in this portfolio',
       );
     }
 
-    const createTrade = await this.prisma.trade.create({
-      data: {
-        coin: createTradeDto.coin,
-        position: createTradeDto.position ?? 'LONG',
-        entry: createTradeDto.entry,
-        quantity: createTradeDto.quantity,
-        status: 'OPEN',
-        exit: null,
-        portfolioId: createTradeDto.portfolioId,
-      },
+    const createTrade = await this.prisma.$transaction(async (tx) => {
+    const requiredCapital = createTradeDto.entry * createTradeDto.quantity;
+
+      const result = await tx.portfolio.updateMany({
+        where: {
+          id: createTradeDto.portfolioId,
+          userId,
+          balance: {
+            gte: requiredCapital,
+          },
+        },
+        data: {
+          balance: {
+            decrement: requiredCapital,
+          },
+        },
+      });
+
+      if (result.count === 0) {
+        this.logger.warn(`
+          Insufficient balance in portfolio: ${createTradeDto.portfolioId} for user: ${userId}
+          `);
+        throw new BadRequestException('Insufficient portfolio balance');
+      }
+
+      return tx.trade.create({
+        data: {
+          coin: createTradeDto.coin,
+          position: createTradeDto.position ?? 'LONG',
+          entry: createTradeDto.entry,
+          quantity: createTradeDto.quantity,
+          status: 'OPEN',
+          exit: null,
+          portfolioId: createTradeDto.portfolioId,
+        },
+      });
     });
 
     this.logger.log(`
@@ -209,43 +231,66 @@ export class TradesService {
       throw new BadRequestException('Trade is already closed');
     }
 
-    const updatedTrade = await this.prisma.trade.updateMany({
-      where: {
-        id,
-        status: 'OPEN',
-        portfolio: {
-          userId,
-        },
-      },
-      data: {
+    const closedTrade = await this.prisma.$transaction(async (tx) => {
+      const reservedCapital = trade.entry * trade.quantity;
+
+      const realizedPnl = calculateRealizedPnl({
+        position: trade.position,
+        entry: trade.entry,
         exit,
-        status: 'CLOSED',
-      },
+        quantity: trade.quantity,
+      });
+
+      const amountToReturn = reservedCapital + realizedPnl;
+      
+      const result = await tx.trade.updateMany({
+        where: {
+          id,
+          status: 'OPEN',
+          portfolio: {
+            userId,
+          },
+        },
+        data: {
+          exit,
+          status: 'CLOSED',
+        },
+      });
+
+      if (result.count === 0) {
+        this.logger.warn(`
+          Trade with ID: ${id} for user: ${userId} has already been closed or modified
+        `);
+        throw new BadRequestException(
+          'Trade has already been closed or modified',
+        );
+      }      
+
+      await tx.portfolio.update({
+        where: {
+          id: trade.portfolioId,
+        },
+        data: {
+          balance: {
+            increment: amountToReturn,
+          },
+        },
+      });
+
+      const closedTrade = await tx.trade.findUniqueOrThrow({
+        where: { id },
+      });
+
+      return { ...closedTrade, realizedPnl};
     });
 
-    if (updatedTrade.count === 0) {
-      throw new BadRequestException(
-        'Trade has already been closed or modified',
-      );
-    }
-
-    const closedTrade = await this.prisma.trade.findUniqueOrThrow({
-      where: { id },
-    });
-
-    const realizedPnl = calculateRealizedPnl({
-      position: closedTrade.position,
-      entry: closedTrade.entry,
-      exit: closedTrade.exit,
-      quantity: closedTrade.quantity,
-    });
-
-    return { ...closedTrade, realizedPnl };
+    return closedTrade;
   }
 //END CLOSE TRADE FUNCTION
 
 //GET STATISTICS FUNCTION
   async getStatistics(userId: number){
+    this.logger.log(`Fetching trade statistics for user: ${userId}`);
 
     const[closedTrades, totalTrades] = await Promise.all([
       this.prisma.trade.findMany({
@@ -264,6 +309,8 @@ export class TradesService {
         },
       }),
     ]);
+
+    this.logger.log(`Total trades for user: ${userId} is ${totalTrades}`);
 
     const tradesWithPnl = closedTrades.map((trade) => {
       const realizedPnl = calculateRealizedPnl({

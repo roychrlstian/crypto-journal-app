@@ -33,16 +33,17 @@ model User {
 }
 
 model Portfolio {
-  id       Int     @id @default(autoincrement())
-  name     String
-  balance  Float
+  id              Int     @id @default(autoincrement())
+  name            String
+  balance         Float
+  initialBalance  Float @default(0)
 
-  userId   Int
-  user     User @relation(fields: [userId], references: [id])
+  userId          Int
+  user            User @relation(fields: [userId], references: [id])
 
-  trades   Trade[]
+  trades          Trade[]
 
-  createdAt DateTime @default(now())
+  createdAt       DateTime @default(now())
 }
 
 model Trade {

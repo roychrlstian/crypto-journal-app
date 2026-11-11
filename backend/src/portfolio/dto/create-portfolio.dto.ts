@@ -10,6 +10,6 @@ export class CreatePortfolioDto {
   balance!: number;
 
   @IsNumber()
-  @IsNotEmpty()
-  userId!: number;
+  @Min(0)
+  initialBalance!: number;
 }

@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -9,6 +9,7 @@ export class PortfolioService {
 
   constructor(private readonly prisma: PrismaService) {}
 
+//CREATE PORTFOLIO FUNCTION
   async createPortfolio(
     createPortfolioDto: CreatePortfolioDto,
     userId: number,
@@ -26,8 +27,8 @@ export class PortfolioService {
       this.logger.warn(`
         Portfolio creation failed for user: ${userId} - Portfolio with name ${createPortfolioDto.name} already exists
         `);
-      throw new NotFoundException(
-        `Portfolio with name ${createPortfolioDto.name} already exists for user ${userId}`,
+      throw new ConflictException(
+        `Portfolio with name ${createPortfolioDto.name} already exists`,
       );
     }
 
@@ -35,6 +36,7 @@ export class PortfolioService {
       data: {
         name: createPortfolioDto.name,
         balance: createPortfolioDto.balance,
+        initialBalance: createPortfolioDto.initialBalance,
         userId: userId,
       },
     });
@@ -42,7 +44,9 @@ export class PortfolioService {
 
     return portfolio;
   }
+//END CREATE PORTFOLIO FUNCTION
 
+//GET ALL PORTFOLIOS FUNCTION
   async findAll(userId: number) {
     this.logger.log(`Fetching portfolios for user: ${userId}`);
     const portfolios = await this.prisma.portfolio.findMany({
@@ -56,7 +60,9 @@ export class PortfolioService {
 
     return portfolios;
   }
+//END GET ALL PORTFOLIOS FUNCTION  
 
+//GET PORTFOLIO BY ID FUNCTION
   async getPortfolioById(id: number, userId: number) {
     this.logger.log(`Fetching portfolio by ID: ${id} for user: ${userId}`);
     const portfolio = await this.prisma.portfolio.findFirst({
@@ -70,7 +76,9 @@ export class PortfolioService {
 
     return portfolio;
   }
+//END GET PORTFOLIO BY ID FUNCTION
 
+//UPDATE PORTFOLIO FUNCTION
   async updatePortfolio(
     id: number,
     updatePortfolioDto: UpdatePortfolioDto,
@@ -87,7 +95,9 @@ export class PortfolioService {
       },
     });
   }
+//END UPDATE PORTFOLIO FUNCTION
 
+//DELETE PORTFOLIO FUNCTION
   async deletePortfolio(id: number, userId: number) {
     await this.getPortfolioById(id, userId);
     this.logger.log(`Deleting portfolio ID: ${id} for user: ${userId}`);
@@ -95,7 +105,9 @@ export class PortfolioService {
       where: { id: id },
     });
   }
+//END DELETE PORTFOLIO FUNCTION
 
+//GET PORTFOLIO STATS FUNCTION
   async getPortfolioStats(userId: number) {
     this.logger.log(`Fetching portfolio stats for user: ${userId}`);
 
@@ -136,4 +148,5 @@ export class PortfolioService {
       };
     });
   }
+//END GET PORTFOLIO STATS FUNCTION
 }

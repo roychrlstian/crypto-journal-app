@@ -29,12 +29,14 @@ export type AggregatePortfolio = {
 export type PortfolioAvgAggregateOutputType = {
   id: number | null
   balance: number | null
+  initialBalance: number | null
   userId: number | null
 }
 
 export type PortfolioSumAggregateOutputType = {
   id: number | null
   balance: number | null
+  initialBalance: number | null
   userId: number | null
 }
 
@@ -42,6 +44,7 @@ export type PortfolioMinAggregateOutputType = {
   id: number | null
   name: string | null
   balance: number | null
+  initialBalance: number | null
   userId: number | null
   createdAt: Date | null
 }
@@ -50,6 +53,7 @@ export type PortfolioMaxAggregateOutputType = {
   id: number | null
   name: string | null
   balance: number | null
+  initialBalance: number | null
   userId: number | null
   createdAt: Date | null
 }
@@ -58,6 +62,7 @@ export type PortfolioCountAggregateOutputType = {
   id: number
   name: number
   balance: number
+  initialBalance: number
   userId: number
   createdAt: number
   _all: number
@@ -67,12 +72,14 @@ export type PortfolioCountAggregateOutputType = {
 export type PortfolioAvgAggregateInputType = {
   id?: true
   balance?: true
+  initialBalance?: true
   userId?: true
 }
 
 export type PortfolioSumAggregateInputType = {
   id?: true
   balance?: true
+  initialBalance?: true
   userId?: true
 }
 
@@ -80,6 +87,7 @@ export type PortfolioMinAggregateInputType = {
   id?: true
   name?: true
   balance?: true
+  initialBalance?: true
   userId?: true
   createdAt?: true
 }
@@ -88,6 +96,7 @@ export type PortfolioMaxAggregateInputType = {
   id?: true
   name?: true
   balance?: true
+  initialBalance?: true
   userId?: true
   createdAt?: true
 }
@@ -96,6 +105,7 @@ export type PortfolioCountAggregateInputType = {
   id?: true
   name?: true
   balance?: true
+  initialBalance?: true
   userId?: true
   createdAt?: true
   _all?: true
@@ -191,6 +201,7 @@ export type PortfolioGroupByOutputType = {
   id: number
   name: string
   balance: number
+  initialBalance: number
   userId: number
   createdAt: Date
   _count: PortfolioCountAggregateOutputType | null
@@ -222,6 +233,7 @@ export type PortfolioWhereInput = {
   id?: Prisma.IntFilter<"Portfolio"> | number
   name?: Prisma.StringFilter<"Portfolio"> | string
   balance?: Prisma.FloatFilter<"Portfolio"> | number
+  initialBalance?: Prisma.FloatFilter<"Portfolio"> | number
   userId?: Prisma.IntFilter<"Portfolio"> | number
   createdAt?: Prisma.DateTimeFilter<"Portfolio"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -232,6 +244,7 @@ export type PortfolioOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
@@ -245,6 +258,7 @@ export type PortfolioWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PortfolioWhereInput | Prisma.PortfolioWhereInput[]
   name?: Prisma.StringFilter<"Portfolio"> | string
   balance?: Prisma.FloatFilter<"Portfolio"> | number
+  initialBalance?: Prisma.FloatFilter<"Portfolio"> | number
   userId?: Prisma.IntFilter<"Portfolio"> | number
   createdAt?: Prisma.DateTimeFilter<"Portfolio"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -255,6 +269,7 @@ export type PortfolioOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.PortfolioCountOrderByAggregateInput
@@ -271,6 +286,7 @@ export type PortfolioScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"Portfolio"> | number
   name?: Prisma.StringWithAggregatesFilter<"Portfolio"> | string
   balance?: Prisma.FloatWithAggregatesFilter<"Portfolio"> | number
+  initialBalance?: Prisma.FloatWithAggregatesFilter<"Portfolio"> | number
   userId?: Prisma.IntWithAggregatesFilter<"Portfolio"> | number
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Portfolio"> | Date | string
 }
@@ -278,6 +294,7 @@ export type PortfolioScalarWhereWithAggregatesInput = {
 export type PortfolioCreateInput = {
   name: string
   balance: number
+  initialBalance?: number
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPortfoliosInput
   trades?: Prisma.TradeCreateNestedManyWithoutPortfolioInput
@@ -287,6 +304,7 @@ export type PortfolioUncheckedCreateInput = {
   id?: number
   name: string
   balance: number
+  initialBalance?: number
   userId: number
   createdAt?: Date | string
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutPortfolioInput
@@ -295,6 +313,7 @@ export type PortfolioUncheckedCreateInput = {
 export type PortfolioUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPortfoliosNestedInput
   trades?: Prisma.TradeUpdateManyWithoutPortfolioNestedInput
@@ -304,6 +323,7 @@ export type PortfolioUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trades?: Prisma.TradeUncheckedUpdateManyWithoutPortfolioNestedInput
@@ -313,6 +333,7 @@ export type PortfolioCreateManyInput = {
   id?: number
   name: string
   balance: number
+  initialBalance?: number
   userId: number
   createdAt?: Date | string
 }
@@ -320,6 +341,7 @@ export type PortfolioCreateManyInput = {
 export type PortfolioUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -327,6 +349,7 @@ export type PortfolioUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -345,6 +368,7 @@ export type PortfolioCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -352,6 +376,7 @@ export type PortfolioCountOrderByAggregateInput = {
 export type PortfolioAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -359,6 +384,7 @@ export type PortfolioMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -367,6 +393,7 @@ export type PortfolioMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -374,6 +401,7 @@ export type PortfolioMinOrderByAggregateInput = {
 export type PortfolioSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   balance?: Prisma.SortOrder
+  initialBalance?: Prisma.SortOrder
   userId?: Prisma.SortOrder
 }
 
@@ -449,6 +477,7 @@ export type PortfolioUpdateOneRequiredWithoutTradesNestedInput = {
 export type PortfolioCreateWithoutUserInput = {
   name: string
   balance: number
+  initialBalance?: number
   createdAt?: Date | string
   trades?: Prisma.TradeCreateNestedManyWithoutPortfolioInput
 }
@@ -457,6 +486,7 @@ export type PortfolioUncheckedCreateWithoutUserInput = {
   id?: number
   name: string
   balance: number
+  initialBalance?: number
   createdAt?: Date | string
   trades?: Prisma.TradeUncheckedCreateNestedManyWithoutPortfolioInput
 }
@@ -494,6 +524,7 @@ export type PortfolioScalarWhereInput = {
   id?: Prisma.IntFilter<"Portfolio"> | number
   name?: Prisma.StringFilter<"Portfolio"> | string
   balance?: Prisma.FloatFilter<"Portfolio"> | number
+  initialBalance?: Prisma.FloatFilter<"Portfolio"> | number
   userId?: Prisma.IntFilter<"Portfolio"> | number
   createdAt?: Prisma.DateTimeFilter<"Portfolio"> | Date | string
 }
@@ -501,6 +532,7 @@ export type PortfolioScalarWhereInput = {
 export type PortfolioCreateWithoutTradesInput = {
   name: string
   balance: number
+  initialBalance?: number
   createdAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutPortfoliosInput
 }
@@ -509,6 +541,7 @@ export type PortfolioUncheckedCreateWithoutTradesInput = {
   id?: number
   name: string
   balance: number
+  initialBalance?: number
   userId: number
   createdAt?: Date | string
 }
@@ -532,6 +565,7 @@ export type PortfolioUpdateToOneWithWhereWithoutTradesInput = {
 export type PortfolioUpdateWithoutTradesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutPortfoliosNestedInput
 }
@@ -540,6 +574,7 @@ export type PortfolioUncheckedUpdateWithoutTradesInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   userId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -548,12 +583,14 @@ export type PortfolioCreateManyUserInput = {
   id?: number
   name: string
   balance: number
+  initialBalance?: number
   createdAt?: Date | string
 }
 
 export type PortfolioUpdateWithoutUserInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trades?: Prisma.TradeUpdateManyWithoutPortfolioNestedInput
 }
@@ -562,6 +599,7 @@ export type PortfolioUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   trades?: Prisma.TradeUncheckedUpdateManyWithoutPortfolioNestedInput
 }
@@ -570,6 +608,7 @@ export type PortfolioUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   name?: Prisma.StringFieldUpdateOperationsInput | string
   balance?: Prisma.FloatFieldUpdateOperationsInput | number
+  initialBalance?: Prisma.FloatFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -608,6 +647,7 @@ export type PortfolioSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   name?: boolean
   balance?: boolean
+  initialBalance?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -619,6 +659,7 @@ export type PortfolioSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   balance?: boolean
+  initialBalance?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -628,6 +669,7 @@ export type PortfolioSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   balance?: boolean
+  initialBalance?: boolean
   userId?: boolean
   createdAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -637,11 +679,12 @@ export type PortfolioSelectScalar = {
   id?: boolean
   name?: boolean
   balance?: boolean
+  initialBalance?: boolean
   userId?: boolean
   createdAt?: boolean
 }
 
-export type PortfolioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "balance" | "userId" | "createdAt", ExtArgs["result"]["portfolio"]>
+export type PortfolioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "balance" | "initialBalance" | "userId" | "createdAt", ExtArgs["result"]["portfolio"]>
 export type PortfolioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   trades?: boolean | Prisma.Portfolio$tradesArgs<ExtArgs>
@@ -664,6 +707,7 @@ export type $PortfolioPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: number
     name: string
     balance: number
+    initialBalance: number
     userId: number
     createdAt: Date
   }, ExtArgs["result"]["portfolio"]>
@@ -1094,6 +1138,7 @@ export interface PortfolioFieldRefs {
   readonly id: Prisma.FieldRef<"Portfolio", 'Int'>
   readonly name: Prisma.FieldRef<"Portfolio", 'String'>
   readonly balance: Prisma.FieldRef<"Portfolio", 'Float'>
+  readonly initialBalance: Prisma.FieldRef<"Portfolio", 'Float'>
   readonly userId: Prisma.FieldRef<"Portfolio", 'Int'>
   readonly createdAt: Prisma.FieldRef<"Portfolio", 'DateTime'>
 }
