@@ -108,45 +108,93 @@ export class PortfolioService {
 //END DELETE PORTFOLIO FUNCTION
 
 //GET PORTFOLIO STATS FUNCTION
-  async getPortfolioStats(userId: number) {
+  async getPortfolioStats(portfolioId: number, userId: number) {
     this.logger.log(`Fetching portfolio stats for user: ${userId}`);
 
-    const portfolios = await this.prisma.portfolio.findMany({
-      where: { userId },
+    const portfolio = await this.prisma.portfolio.findFirst({
+      where: {
+        userId,
+        id: portfolioId,
+      },
       include: {
         trades: true,
       },
     });
 
-    if (!portfolios || portfolios.length === 0) {
-      this.logger.warn(`No portfolios found for user: ${userId}`);
-      throw new NotFoundException(`No portfolios found for user ${userId}`);
+    if (!portfolio) {
+      this.logger.warn(`Portfolio ${portfolioId} not found for user: ${userId}`);
+      throw new NotFoundException(`Portfolio with ID ${portfolioId} not found`);
     }
 
-    return portfolios.map((portfolio) => {
-      const openTrades = portfolio.trades.filter((trade) => trade.exit === null).length;
-      const closedTrades = portfolio.trades.filter(
-        (trade) => trade.exit !== null,
-      ).length;
-      const totalTrades = portfolio.trades.length;
-      const totalProfitLoss = portfolio.trades
-        .filter((trade) => {
-          return trade.exit !== null;
-        })
-        .reduce((acc, trade) => {
-          const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
-          return acc + profitLoss;
-        }, 0);
+    const openTrades = portfolio.trades.filter((trade) => trade.exit === null).length;
+    const closedTrades = portfolio.trades.filter(
+      (trade) => trade.exit !== null,
+    ).length;
+    const totalTrades = portfolio.trades.length;
+    const totalProfitLoss = portfolio.trades
+      .filter((trade) => {
+        return trade.exit !== null;
+      })
+      .reduce((acc, trade) => {
+        const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
+        return acc + profitLoss;
+      }, 0);
 
-      return {
-        portfolioId: portfolio.id,
-        name: portfolio.name,
-        totalTrades: totalTrades,
-        openTrades: openTrades,
-        closedTrades: closedTrades,
-        totalProfitLoss: totalProfitLoss,
-      };
-    });
+    return {
+      portfolioId: portfolio.id,
+      name: portfolio.name,
+      totalTrades,
+      openTrades,
+      closedTrades,
+      totalProfitLoss,
+    };
   }
 //END GET PORTFOLIO STATS FUNCTION
+
+//GET PORTFOLIO PERFORMANCE FUNCTION
+  async getPortfolioPerformance(portfolioId: number, userId: number) {
+    this.logger.log(`Fetching portfolio performance for user: ${userId}`);
+
+    const portfolio = await this.prisma.portfolio.findFirst({
+      where: {
+        userId,
+        id: portfolioId,
+      },
+      include: {
+        trades: true,
+      },
+    });
+
+    if (!portfolio) {
+      this.logger.warn(`Portfolio ${portfolioId} not found for user: ${userId}`);
+      throw new NotFoundException(`Portfolio with ID ${portfolioId} not found`);
+    }
+
+    const initialBalance = portfolio.initialBalance;
+    const currentBalance = portfolio.balance;
+    const totalRealizedPnl = portfolio.trades
+      .filter((trade) => trade.exit !== null)
+      .reduce((acc, trade) => {
+        const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
+        return acc + profitLoss;
+      }, 0);
+    const totalInvestedCapital = portfolio.trades
+      .filter((trade) => trade.exit === null)
+      .reduce((acc, trade) => {
+        return acc + trade.entry * trade.quantity;
+      }, 0);
+    const performancePercentage = initialBalance > 0 ? (currentBalance - initialBalance) / initialBalance * 100 : 0;
+    const totalEquity = currentBalance + totalRealizedPnl;
+    
+
+    return {
+      initialBalance,
+      currentBalance,
+      totalRealizedPnl,
+      totalInvestedCapital,
+      performancePercentage,
+      totalEquity,
+    };
+  }
+//END GET PORTFOLIO PERFORMANCE FUNCTION
 }
