@@ -28,22 +28,41 @@ export class PortfolioController {
   }
 
   @Get()
-  getMyPortfolios(@CurrentUser('userId') userId: number) {
+  getMyPortfolios(
+    @CurrentUser('userId') userId: number,
+  ) {
     return this.portfolioService.findAll(userId);
   }
 
-  @Get('stats')
-  getStats(@CurrentUser('userId') userId: number) {
-    return this.portfolioService.getPortfolioStats(userId);
+  @Get(':id/stats')
+  getStats(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId: number,
+  ) {
+    return this.portfolioService.getStats(+id, userId);
+  }
+
+  @Get(':id/performance')
+  getPerformance(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId: number,
+  ) {
+    return this.portfolioService.getPerformance(+id, userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string, @CurrentUser('userId') userId: number) {
+  findOne(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId: number,
+  ) {
     return this.portfolioService.getPortfolioById(+id, userId);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @CurrentUser('userId') userId: number) {
+  remove(
+    @Param('id') id: string,
+    @CurrentUser('userId') userId: number,
+  ) {
     return this.portfolioService.deletePortfolio(+id, userId);
   }
 

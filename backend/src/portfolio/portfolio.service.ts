@@ -2,6 +2,7 @@ import { ConflictException, Injectable, Logger, NotFoundException } from '@nestj
 import { CreatePortfolioDto } from './dto/create-portfolio.dto';
 import { UpdatePortfolioDto } from './dto/update-portfolio.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { calculateRealizedPnl } from '../trades/pnl.util';
 
 @Injectable()
 export class PortfolioService {
@@ -108,7 +109,7 @@ export class PortfolioService {
 //END DELETE PORTFOLIO FUNCTION
 
 //GET PORTFOLIO STATS FUNCTION
-  async getPortfolioStats(portfolioId: number, userId: number) {
+  async getStats(portfolioId: number, userId: number) {
     this.logger.log(`Fetching portfolio stats for user: ${userId}`);
 
     const portfolio = await this.prisma.portfolio.findFirst({
@@ -126,19 +127,24 @@ export class PortfolioService {
       throw new NotFoundException(`Portfolio with ID ${portfolioId} not found`);
     }
 
-    const openTrades = portfolio.trades.filter((trade) => trade.exit === null).length;
+    const openTrades = portfolio.trades.filter((trade) => trade.status === 'OPEN').length;
     const closedTrades = portfolio.trades.filter(
-      (trade) => trade.exit !== null,
+      (trade) => trade.status === 'CLOSED',
     ).length;
     const totalTrades = portfolio.trades.length;
-    const totalProfitLoss = portfolio.trades
-      .filter((trade) => {
-        return trade.exit !== null;
-      })
-      .reduce((acc, trade) => {
-        const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
-        return acc + profitLoss;
-      }, 0);
+    const totalProfitLoss = Number(
+      portfolio.trades
+        .filter((trade) => trade.status === 'CLOSED')
+        .reduce((acc, trade) => {
+          return acc + calculateRealizedPnl({
+            position: trade.position,
+            entry: trade.entry,
+            exit: trade.exit,
+            quantity: trade.quantity,
+          })
+        }, 0)
+        .toFixed(2)
+    );
 
     return {
       portfolioId: portfolio.id,
@@ -152,7 +158,7 @@ export class PortfolioService {
 //END GET PORTFOLIO STATS FUNCTION
 
 //GET PORTFOLIO PERFORMANCE FUNCTION
-  async getPortfolioPerformance(portfolioId: number, userId: number) {
+  async getPerformance(portfolioId: number, userId: number) {
     this.logger.log(`Fetching portfolio performance for user: ${userId}`);
 
     const portfolio = await this.prisma.portfolio.findFirst({
@@ -170,23 +176,63 @@ export class PortfolioService {
       throw new NotFoundException(`Portfolio with ID ${portfolioId} not found`);
     }
 
-    const initialBalance = portfolio.initialBalance;
-    const currentBalance = portfolio.balance;
-    const totalRealizedPnl = portfolio.trades
-      .filter((trade) => trade.exit !== null)
-      .reduce((acc, trade) => {
-        const profitLoss = ((trade.exit || 0) - trade.entry) * trade.quantity;
-        return acc + profitLoss;
-      }, 0);
-    const totalInvestedCapital = portfolio.trades
-      .filter((trade) => trade.exit === null)
+    const tradesWithPnl = portfolio.trades
+      .filter((trade) => trade.status === 'CLOSED')
+      .map((trade) => {
+        const realizedPnl = calculateRealizedPnl({
+          position: trade.position,
+          entry: trade.entry,
+          exit: trade.exit,
+          quantity: trade.quantity,
+        });
+        return { ...trade, realizedPnl };
+      });
+
+    const winningTradesList = tradesWithPnl.filter(
+      (trade) => trade.realizedPnl > 0,
+    );
+
+    const losingTradesList = tradesWithPnl.filter(
+      (trade) => trade.realizedPnl < 0,
+    );
+
+
+    const initialBalance = Number(portfolio.initialBalance.toFixed(2));
+    const currentBalance = Number(portfolio.balance.toFixed(2));
+    const totalRealizedPnl = Number(
+      tradesWithPnl
+      .reduce((acc, trade) => acc + trade.realizedPnl, 0)
+      .toFixed(2),
+    );
+    const winningTrades = winningTradesList.length;
+    const losingTrades = losingTradesList.length;
+    const breakevenTrades = tradesWithPnl.filter((trade) => trade.realizedPnl === 0).length;
+    const winRate = tradesWithPnl.length > 0 ? Number(((winningTrades / tradesWithPnl.length) * 100).toFixed(2)) : 0;
+    const totalInvestedCapital = Number(
+      portfolio.trades
+      .filter((trade) => trade.status === 'OPEN')
       .reduce((acc, trade) => {
         return acc + trade.entry * trade.quantity;
-      }, 0);
-    const performancePercentage = initialBalance > 0 ? (currentBalance - initialBalance) / initialBalance * 100 : 0;
-    const totalEquity = currentBalance + totalRealizedPnl;
+      }, 0)
+      .toFixed(2)
+    );
+    const totalEquity = Number((currentBalance + totalInvestedCapital).toFixed(2));
+    const performancePercentage = initialBalance > 0 ? Number(((totalEquity - initialBalance) / initialBalance * 100).toFixed(2)) : 0;
+    const averageWinningPnl = winningTrades > 0 ? Number((
+      winningTradesList 
+      .reduce((acc, trade) => acc + trade.realizedPnl, 0)
+      / winningTrades)
+      .toFixed(2)
+    ) : 0;
+    const averageLosingPnl = losingTrades > 0 ? Number((
+      losingTradesList
+      .reduce((acc, trade) => acc + trade.realizedPnl, 0)
+      / losingTrades)
+      .toFixed(2)
+    ) : 0;
+    const bestTrade = winningTradesList.length > 0 ? winningTradesList.reduce((best, trade) => trade.realizedPnl > best.realizedPnl ? trade : best) : null;
+    const worstTrade = losingTradesList.length > 0 ? losingTradesList.reduce((worst, trade) => trade.realizedPnl < worst.realizedPnl ? trade : worst) : null;
     
-
     return {
       initialBalance,
       currentBalance,
@@ -194,6 +240,14 @@ export class PortfolioService {
       totalInvestedCapital,
       performancePercentage,
       totalEquity,
+      winningTrades,
+      losingTrades,
+      breakevenTrades,
+      winRate,
+      averageWinningPnl,
+      averageLosingPnl,
+      bestTrade,
+      worstTrade,
     };
   }
 //END GET PORTFOLIO PERFORMANCE FUNCTION
